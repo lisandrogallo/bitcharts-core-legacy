@@ -21,15 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+import re
 import sys
 import smtplib
 import requests
 import argparse
 import simplejson as json
-from datetime import date, datetime, timedelta
 from collections import OrderedDict
-from ConfigParser import SafeConfigParser
 from sqlalchemy.engine import Engine
+from BeautifulSoup import BeautifulSoup
+from ConfigParser import SafeConfigParser
+from datetime import date, datetime, timedelta
 from sqlalchemy import exc, event, create_engine, ForeignKey, Sequence
 from sqlalchemy import Column, Date, Time, Integer, String, Boolean, Float
 from sqlalchemy.ext.declarative import declarative_base
@@ -339,26 +341,25 @@ def write_values(database_url):
             session.close()
 
 
-
-def write_json_file(ordered_dict, json_filename):
+def write_json_file(ordered_dict, json_path):
     """
     Create database schema.
     :param ordered_dict: Ordered dictionary to be serialized to JSON.
-    :param json_filename: Filename to write serialized JSON in filesystem.
+    :param json_path: Fullpath to write serialized JSON in filesystem.
     """
     pretty_json = json.dumps(ordered_dict, sort_keys=False, indent=4 * ' ')
 
     # Write a pretty formated JSON to a file
-    with open(json_filename, 'w') as json_file:
+    with open(json_path, 'w') as json_file:
         print >> json_file, pretty_json
     json_file.close()
 
 
-def generate_sources_json(database_url, json_filename):
+def generate_sources_json(database_url, output_dir):
     """
     Generates a JSON file on filesystem for the Bitcharts' API.
     :param database_url: Full path URL to SQLite database.
-    :param json_filename: Filename to write serialized JSON in filesystem.
+    :param output_dir: Output directory to write serialized JSON in filesystem.
     """
     try:
         engine = connect_database(database_url)
@@ -386,7 +387,10 @@ def generate_sources_json(database_url, json_filename):
             key_name, row_dict = query.asdict(session)
             sources_dict[key_name] = row_dict
 
-        write_json_file(sources_dict, json_filename)
+        # Generate JSON file from ordered dictionary
+        json_path = output_dir + 'sources.json'
+        print 'Generating ' + json_path + ' file...'
+        write_json_file(sources_dict, json_path)
 
     except exc.SQLAlchemyError, exception:
         print 'Error %s:' % exception.args[0]
@@ -397,11 +401,11 @@ def generate_sources_json(database_url, json_filename):
             session.close()
 
 
-def generate_graphs_json(database_url, json_filename):
+def generate_graphs_json(database_url, output_dir):
     """
     Generates a JSON file on filesystem for the Bitcharts' graphs.
     :param database_url: Full path URL to SQLite database.
-    :param json_filename: Filename to write serialized JSON in filesystem.
+    :param output_dir: Output directory to write serialized JSON in filesystem.
     """
     try:
         engine = connect_database(database_url)
@@ -452,7 +456,10 @@ def generate_graphs_json(database_url, json_filename):
             key_name = exchange.name.lower()
             graphs_dict[key_name] = values[::-1]
 
-        write_json_file(graphs_dict, json_filename)
+        # Generate JSON file from ordered dictionary
+        json_path = output_dir + 'graphs.json'
+        print 'Generating ' + json_path + ' file...'
+        write_json_file(graphs_dict, json_path)
 
     except exc.SQLAlchemyError, exception:
         print 'Error %s:' % exception.args[0]
@@ -461,6 +468,87 @@ def generate_graphs_json(database_url, json_filename):
     finally:
         if session:
             session.close()
+
+
+def generate_marketcap_json(output_dir):
+    """
+    Get marketcap values from coinmarketcap.com and output to a JSON file.
+    :param output_dir: Output directory to write serialized JSON in filesystem.
+    """
+    try:
+        # Get full web page from Coinmarketcap.com index.
+        session = requests.Session()
+        link = 'http://coinmarketcap.com/'
+        req = session.get(link)
+
+        # Create BeautifulSoup object with web response.
+        soup = BeautifulSoup(req.text)
+
+        # Ordered dictionary object to store data to be JSON serialized.
+        marketcap_dict = OrderedDict()
+        marketcap_dict['timestamp'] = datetime.now().strftime(
+                                        '%a %b %d %Y, %H:%M:%S')
+        marketcap_dict['currencies'] = []
+
+        # Regex expression to search for patterns in web page.
+        anything = re.compile('^.*$')
+        name_regex = re.compile('^.*\\bcurrency-name\\b.*$')
+        marketcap_regex = re.compile('^.*\\bmarket-cap\\b.*$')
+        price_regex = re.compile('^.*\\bprice\\b.*$')
+        positive_change_regex = re.compile('^.*\\bpositive_change\\b.*$')
+        negative_change_regex = re.compile('^.*\\bnegative_change\\b.*$')
+
+        # Find HTML <tr> tags for each currency.
+        table = soup.findAll('tr', {'id': anything})
+
+        # Find the top 5 (five) currencies with the highest marketcap
+        # and obtain their values
+        for item in table[:5]:
+            currency = []
+
+            # Get the currency name
+            names = item.findAll('td', {'class': name_regex})
+            for name in names:
+                currency.append(name.find('a').contents[0].strip())
+
+            # Get the marketcap value
+            marketcaps = item.findAll('td', {'class': marketcap_regex})
+            for marketcap in marketcaps:
+                currency.append(marketcap.contents[0].strip())
+
+            # Get the price value
+            prices = item.findAll('a', {'class': price_regex})
+            for price in prices:
+                currency.append(price.contents[0].strip())
+
+            # Get the change percentage and sign
+            changes = item.findAll('td', {'class': positive_change_regex})
+
+            if changes:
+                for change in changes:
+                    currency.append(change.contents[0].strip())
+                    currency.append('positive')
+            else:
+                changes = item.findAll('td', {'class': negative_change_regex})
+                for change in changes:
+                    currency.append(change.contents[0].strip())
+                    currency.append('negative')
+
+            marketcap_dict['currencies'].append(currency)
+
+        # Generate JSON file from ordered dictionary
+        json_path = output_dir + 'marketcap.json'
+        print 'Generating ' + json_path + ' file...'
+        write_json_file(marketcap_dict, json_path)
+
+    except Exception as exception:
+        print 'Error %s:' % exception.args[0]
+        send_email(
+                    'daemon@bitcharts.org',
+                    'staff@bitcharts.org',
+                    'ERROR',
+                    exception.args[0]
+                    )
 
 
 Base = declarative_base()
