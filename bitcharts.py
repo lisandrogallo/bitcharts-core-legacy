@@ -383,6 +383,7 @@ def generate_sources_json(database_url, output_dir):
         for exchange in exchanges:
             query = session.query(Association).filter(
         Association.exchange_id == exchange.id).order_by(
+        Association.date.desc()).order_by(
         Association.time.desc()).first()
             key_name, row_dict = query.asdict(session)
             sources_dict[key_name] = row_dict
