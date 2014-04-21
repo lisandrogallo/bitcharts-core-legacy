@@ -38,25 +38,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref, aliased, sessionmaker
 
 
-def send_email(sender, receiver, subject, body):
-    """
-    Auxiliar function to inform by mail about any unexpected exception.
-    :param sender: From mail address.
-    :param receiver: Destination mail address.
-    :param subject: Subject.
-    :param body: Content body.
-    """
-    try:
-        msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s"
-            %(sender, receiver, subject, body))
-        smtp = smtplib.SMTP('localhost')
-        smtp.sendmail(sender, [receiver], msg)
-        smtp.quit()
-
-    except Exception as exception:
-        print 'Error %s:' % exception.args[0]
-
-
 @event.listens_for(Engine, 'connect')
 def set_sqlite_pragma(dbapi_connection, connection_record):
     """
@@ -125,6 +106,25 @@ def config_parser(config_file):
         res.append(tup)
 
     return res
+
+
+def send_email(sender, receiver, subject, body):
+    """
+    Auxiliar function to inform by mail about any unexpected exception.
+    :param sender: From mail address.
+    :param receiver: Destination mail address.
+    :param subject: Subject.
+    :param body: Content body.
+    """
+    try:
+        msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s"
+            %(sender, receiver, subject, body))
+        smtp = smtplib.SMTP('localhost')
+        smtp.sendmail(sender, [receiver], msg)
+        smtp.quit()
+
+    except Exception as exception:
+        print 'Error %s:' % exception.args[0]
 
 
 def get_json(url):
