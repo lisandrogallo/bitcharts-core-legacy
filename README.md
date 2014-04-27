@@ -3,6 +3,8 @@ Bitcharts Core
 
 Core and scripts used on http://bitcharts.org
 
+**Bounties / Donations:** 1CPb9QZBkz3gD1rvG9ekNFK5k6jpUycika
+
 ## Installation
 
 ### Dependencies
