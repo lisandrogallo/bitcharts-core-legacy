@@ -9,7 +9,7 @@ Core and scripts used on http://bitcharts.org
 
 ### Dependencies
 
-    sudo pip install SQLAlchemy BeautifulSoup simplejson
+    sudo pip install SQLAlchemy BeautifulSoup simplejson tweepy
 
 If you don't have Pip, find it here: http://pypi.python.org/pypi/pip
 
