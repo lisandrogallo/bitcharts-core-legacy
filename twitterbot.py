@@ -84,7 +84,6 @@ def parse_args():
 
     database_url = 'sqlite:///' + args.database_name
 
-
     last_value = get_last_from_exchange(database_url, args.exchange_name)
 
 
