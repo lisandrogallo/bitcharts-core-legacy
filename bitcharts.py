@@ -369,7 +369,6 @@ def generate_sources_json(database_url, output_dir):
         active_exchange_ids = aliased(Exchange, session.query(Exchange).filter(
             Exchange.active == 1).subquery())
 
-        # query = session.query(Association).all()
         exchanges = session.query(active_exchange_ids).all()
 
         # Ordered dictionary to be serialized to JSON
@@ -550,6 +549,42 @@ def generate_marketcap_json(output_dir):
                     'ERROR',
                     exception.args[0]
                     )
+
+
+def get_last_from_exchange(database_url, exchange_name):
+    """
+    Get last value obtained from the specified exchange.
+    :param database_url: Full path URL to SQLite database.
+    :param exchange_name: Exchange name.
+    """
+    try:
+        engine = connect_database(database_url)
+        session = open_session(engine)
+
+        # Get the exchange object for the given exchange name
+        exchange_obj = session.query(Exchange).filter(
+            Exchange.name == exchange_name).first()
+
+        # If exchange exists get its last currency value in database
+        if exchange_obj:
+
+            association_obj = session.query(Association).filter(
+                Association.exchange_id == exchange_obj.id).order_by(
+                Association.date.desc()).order_by(
+                Association.time.desc()).first()
+
+            return association_obj.last
+
+        else:
+            return None
+
+    except exc.SQLAlchemyError, exception:
+        print 'Error %s:' % exception.args[0]
+        sys.exit(1)
+
+    finally:
+        if session:
+            session.close()
 
 
 Base = declarative_base()
