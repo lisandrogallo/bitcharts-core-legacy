@@ -54,7 +54,7 @@ def tweet_this(exchange_name, last_value, dolar_blue):
     btc_ars_str = '1 BTC = $'+ format(value_ars, ',.2f') + ' ARS '
     source_str = '· Source: #' + exchange_name
     dolar_str = ' | Dolar: ' + str(dolar_blue)
-    suffix_str = ' #bitcoin #Argentina · More info: http://bitchars.org'
+    suffix_str = ' #bitcoin #Argentina · More info: http://bitcharts.io'
     tweet = btc_ars_str + source_str + dolar_str + suffix_str
 
     # Tweet it!
