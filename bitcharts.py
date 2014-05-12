@@ -174,11 +174,17 @@ def parse_values(dictionary):
 
     # Search for common keys used on APIs and store its values
     if 'last' in res.iterkeys():
-        last = float(res.get('last'))
-        return last
+        try:
+            last = float(res.get('last'))
+            return last
+        except TypeError:
+            return None
     elif 'blue' in res.iterkeys():
-        blue = float(res.get('blue'))
-        return blue
+        try:
+            blue = float(res.get('blue'))
+            return blue
+        except TypeError:
+            return None
 
 
 def write_object(database_url, new_object):
@@ -326,11 +332,12 @@ def write_values(database_url):
             if from_api:
                 last = parse_values(from_api)
 
-                new_assoc = Association(exchange.id,
-                                        exchange.currency_id,
-                                        last)
+                if last:
+                    new_assoc = Association(exchange.id,
+                                            exchange.currency_id,
+                                            last)
 
-                write_object(database_url, new_assoc)
+                    write_object(database_url, new_assoc)
 
     except exc.SQLAlchemyError, exception:
         print 'Error %s:' % exception.args[0]
