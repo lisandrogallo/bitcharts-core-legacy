@@ -1,7 +1,7 @@
 Bitcharts Core
 ==============
 
-Core and scripts used on http://bitcharts.org
+Core and scripts used on http://bitcharts.io
 
 **Donations:** 1CPb9QZBkz3gD1rvG9ekNFK5k6jpUycika
 
@@ -9,15 +9,13 @@ Core and scripts used on http://bitcharts.org
 
 ### Dependencies
 
-    sudo pip install SQLAlchemy BeautifulSoup simplejson tweepy
+    sudo pip install -r requirements.txt
 
 If you don't have Pip, find it here: http://pypi.python.org/pypi/pip
 
 ## Credits
 
 **Author:** Lisandro Gallo (@lisogallo) liso [at] riseup.net
-
-**Collaborators:** Maxi Cañellas (@maxi_dev) maxi.canellas [at] gmail.com
 
 ## License
 
