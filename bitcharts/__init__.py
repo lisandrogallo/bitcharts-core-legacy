@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -10,12 +10,23 @@ db = SQLAlchemy(app)
 
 
 class Currency(db.Model):
-    __tablename__ = "currencies"
+    __tablename__ = 'currencies'
 
-    id = db.Column(db.Integer, db.Sequence('currency_id_seq'), primary_key=True)
-    name = db.Column(db.String(10), unique=True)
+    id = db.Column(
+        db.Integer,
+        db.Sequence('currency_id_seq'),
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.String(10),
+        unique=True
+    )
+
     description = db.Column(db.String)
+
     cryptocurrency = db.Column(db.Boolean)
+
     active = db.Column(db.Boolean)
 
     def __init__(self, name, description, cryptocurrency, active):
@@ -29,17 +40,32 @@ class Currency(db.Model):
 
 
 class Exchange(db.Model):
-    __tablename__ = "exchanges"
+    __tablename__ = 'exchanges'
 
-    id = db.Column(db.Integer, db.Sequence('exchange_id_seq'), primary_key=True)
+    id = db.Column(
+        db.Integer,
+        db.Sequence('exchange_id_seq'),
+        primary_key=True
+    )
+
     name = db.Column(db.String(10))
+
     country = db.Column(db.String(10))
+
     url = db.Column(db.String)
+
     api = db.Column(db.String)
-    currency_id = db.Column(db.Integer, db.ForeignKey("currencies.id"))
+
+    currency_id = db.Column(
+        db.Integer,
+        db.ForeignKey('currencies.id')
+    )
+
     currency = db.relationship(
-        "Currency",
-    backref=db.backref("exchanges", order_by=id))
+        'Currency',
+        backref=db.backref('exchanges', order_by=id)
+    )
+
     active = db.Column(db.Boolean)
 
     def __init__(self, name, country, url, api, currency_id, active):
@@ -54,12 +80,33 @@ class Exchange(db.Model):
 class Association(db.Model):
     __tablename__ = 'exchanges_currencies'
 
-    id = db.Column(db.Integer, db.Sequence('association_id_seq'), primary_key=True)
-    exchange_id = db.Column(db.Integer, db.ForeignKey('exchanges.id'))
-    currency_id = db.Column(db.Integer, db.ForeignKey('currencies.id'))
+    id = db.Column(
+        db.Integer,
+        db.Sequence('association_id_seq'),
+        primary_key=True
+    )
+
+    exchange_id = db.Column(
+        db.Integer,
+        db.ForeignKey('exchanges.id')
+    )
+
+    currency_id = db.Column(
+        db.Integer,
+        db.ForeignKey('currencies.id')
+    )
+
     last = db.Column(db.Float)
-    date = db.Column(db.Date, default=date.today())
-    time = db.Column(db.Time, default=datetime.now().time())
+
+    date = db.Column(
+        db.Date,
+        default=date.today()
+    )
+
+    time = db.Column(
+        db.Time,
+        default=datetime.now().time()
+    )
 
 #
 #     def asdict(self, session):
