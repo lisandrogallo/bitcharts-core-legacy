@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.script import Manager
+from flask.ext.script import Manager, prompt_bool
 from bitcharts import app, db
 from bitcharts.utils import MyParser
 
@@ -21,6 +21,13 @@ def create_db(exchanges_file=exchanges, currencies_file=currencies):
     db.create_all()
     print config_parser(exchanges_file)
     print config_parser(currencies_file)
+
+
+@manager.command
+def rebuild_db():
+    if prompt_bool('Are you sure you want to rebuild database?'):
+        db.drop_all()
+        create_db()
 
 
 if __name__ == "__main__":
