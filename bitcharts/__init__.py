@@ -6,6 +6,8 @@ from datetime import date, datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/bitcharts.db'
+app.config['EXCHANGES_FILE'] = 'config/exchanges.cfg'
+app.config['CURRENCIES_FILE'] = 'config/currencies.cfg'
 db = SQLAlchemy(app)
 
 
