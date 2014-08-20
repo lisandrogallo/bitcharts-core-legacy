@@ -4,6 +4,7 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import date, datetime
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/bitcharts.db'
 app.config['EXCHANGES_FILE'] = 'config/exchanges.cfg'
