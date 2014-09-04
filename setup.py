@@ -13,6 +13,7 @@ setup(
         'Flask==0.10.1',
         'Flask-SQLAlchemy==1.0',
         'Flask-Script==2.0.5',
+        'requests==2.4.0',
         ],
     keywords='',
     license = 'AGPL',
