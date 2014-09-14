@@ -59,6 +59,8 @@ class Exchange(db.Model):
 
     api = db.Column(db.String)
 
+    key = db.Column(db.String)
+
     currency_id = db.Column(
         db.Integer,
         db.ForeignKey('currencies.id')
@@ -71,11 +73,12 @@ class Exchange(db.Model):
 
     active = db.Column(db.Boolean)
 
-    def __init__(self, name, country, url, api, currency_id, active):
+    def __init__(self, name, country, url, api, key, currency_id, active):
         self.name = name
         self.country = country
         self.url = url
         self.api = api
+        self.key = key
         self.currency_id = currency_id
         self.active = active
 
