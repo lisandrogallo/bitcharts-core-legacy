@@ -2,7 +2,8 @@
 
 from flask.ext.script import Manager, prompt_bool
 from bitcharts.utils import MyParser
-from bitcharts import app, db
+from bitcharts import app, db, Exchange
+from ast import literal_eval
 
 
 manager = Manager(usage='Perform database operations')
@@ -19,9 +20,26 @@ def config_parser(config_file):
 @manager.command
 def create(exchanges_file=exchanges, currencies_file=currencies):
     """Creates database schema from SQLAlchemy models"""
+
     db.create_all()
-    print config_parser(exchanges_file)
-    print config_parser(currencies_file)
+    exchanges = config_parser(exchanges_file)
+
+    for key, value in exchanges.iteritems():
+        # TO-DO: add exception handling for incorrect values in config files
+        exchange = Exchange(
+            name=key,
+            country=value['country'],
+            url=value['url'],
+            api=value['api'],
+            key=value['key'],
+            currency_id=value['currency'],
+            active=literal_eval(value['active'])
+        )
+
+        if exchange.active:
+            db.session.add(exchange)
+
+        db.session.commit()
 
 
 @manager.command
