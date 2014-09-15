@@ -2,7 +2,7 @@
 
 from flask.ext.script import Manager, prompt_bool
 from bitcharts.utils import MyParser
-from bitcharts import app, db, Exchange
+from bitcharts import app, db, Exchange, Currency
 from ast import literal_eval
 
 
@@ -38,6 +38,20 @@ def create(exchanges_file=exchanges, currencies_file=currencies):
 
         if exchange.active:
             db.session.add(exchange)
+
+    currencies = config_parser(currencies_file)
+
+    for key, value in currencies.iteritems():
+        # TO-DO: add exception handling for incorrect values in config files
+        currency = Currency(
+            name=key,
+            description=value['description'],
+            cryptocurrency=literal_eval(value['cryptocurrency']),
+            active=literal_eval(value['active'])
+        )
+
+        if currency.active:
+            db.session.add(currency)
 
         db.session.commit()
 
