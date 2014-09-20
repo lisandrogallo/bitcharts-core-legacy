@@ -38,8 +38,8 @@ class Currency(db.Model):
         self.cryptocurrency = cryptocurrency
         self.active = active
 
-#     def __repr__(self):
-#         return '<Currency %r>' % self.name
+    def __repr__(self):
+        return '<Currency %r>' % self.name
 
 
 class Exchange(db.Model):
@@ -82,6 +82,9 @@ class Exchange(db.Model):
         self.currency_id = currency_id
         self.active = active
 
+    def __repr__(self):
+        return '<Exchange %r>' % self.name
+
 
 class Association(db.Model):
     __tablename__ = 'exchanges_currencies'
@@ -113,6 +116,11 @@ class Association(db.Model):
         db.Time,
         default=datetime.now().time()
     )
+
+    def __init__(self, exchange_id, currency_id, last):
+        self.exchange_id = exchange_id
+        self.currency_id = currency_id
+        self.last = last
 
 #
 #     def asdict(self, session):
