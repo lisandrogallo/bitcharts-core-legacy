@@ -22,22 +22,6 @@ def create(exchanges_file=exchanges, currencies_file=currencies):
     """Creates database schema from SQLAlchemy models"""
 
     db.create_all()
-    exchanges = config_parser(exchanges_file)
-
-    for key, value in exchanges.iteritems():
-        # TO-DO: add exception handling for incorrect values in config files
-        exchange = Exchange(
-            name=key,
-            country=value['country'],
-            url=value['url'],
-            api=value['api'],
-            key=value['key'],
-            currency_id=value['currency'],
-            active=literal_eval(value['active'])
-        )
-
-        if exchange.active:
-            db.session.add(exchange)
 
     currencies = config_parser(currencies_file)
 
@@ -53,7 +37,27 @@ def create(exchanges_file=exchanges, currencies_file=currencies):
         if currency.active:
             db.session.add(currency)
 
-        db.session.commit()
+    db.session.commit()
+
+    exchanges = config_parser(exchanges_file)
+
+    for key, value in exchanges.iteritems():
+        # TO-DO: add exception handling for incorrect values in config files
+        currency = Currency.query.filter_by(name=value['currency']).first()
+        exchange = Exchange(
+            name=key,
+            country=value['country'],
+            url=value['url'],
+            api=value['api'],
+            key=value['key'],
+            currency_id=currency.id,
+            active=literal_eval(value['active'])
+        )
+
+        if exchange.active:
+            db.session.add(exchange)
+
+    db.session.commit()
 
 
 @manager.command
