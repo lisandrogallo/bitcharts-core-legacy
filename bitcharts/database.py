@@ -34,8 +34,7 @@ def create(exchanges_file=exchanges, currencies_file=currencies):
             active=literal_eval(value['active'])
         )
 
-        if currency.active:
-            db.session.add(currency)
+        db.session.add(currency)
 
     db.session.commit()
 
@@ -54,8 +53,7 @@ def create(exchanges_file=exchanges, currencies_file=currencies):
             active=literal_eval(value['active'])
         )
 
-        if exchange.active:
-            db.session.add(exchange)
+        db.session.add(exchange)
 
     db.session.commit()
 
