@@ -13,9 +13,20 @@ class MyParser(SafeConfigParser):
         return d
 
 
+def request_ticker(api_url):
+
+    resp = post(api_url) or get(api_url)
+
+    if 200 != resp.status_code:
+        return False
+
+    return resp
+
+
 def get_ticker(api_url):
     try:
-        req = post(api_url) or get(api_url)
+        # req = post(api_url) or get(api_url)
+        req = request_ticker(api_url)
         if req:
             print req
             json_data = req.json()
@@ -30,7 +41,8 @@ def search_key(data, key):
     print type(data)
     if isinstance(data, dict):
         if key in data:
-            return float(data.get(key))
+            if not isinstance(data.get(key), dict):
+                return float(data.get(key))
         else:
             for v in data.itervalues():
                 search = search_key(v, key)
