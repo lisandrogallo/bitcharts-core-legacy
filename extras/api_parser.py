@@ -1,31 +1,37 @@
 # -*- coding: utf-8 -*-
 
 from bitcharts.utils import request_ticker
+from collections import OrderedDict
 import json
 
 
 def get_ticker_LaNacion():
     """"""
-    key = 'InformalCompraValue'
-    req = request_ticker('http://contenidos.lanacion.com.ar/json/dolar')
+    res = OrderedDict()
+    blue_key = 'InformalCompraValue'
+    oficial_key = 'CasaCambioCompraValue'
+
+    req = request_ticker(
+        'http://contenidos.lanacion.com.ar/json/dolar'
+    )
 
     content = req.content[19:-2]
 
     data = json.loads(content)
 
-    if key in data:
-        last = data.get(key)
-        res = {
-            'last': float(last.replace(',', '.'))
-        }
+    if (blue_key and oficial_key) in data:
+        res['blue'] = float(data.get(blue_key).replace(',', '.'))
+        res['oficial'] = float(data.get(oficial_key).replace(',', '.'))
 
-    print res
+    return json.dumps(res, sort_keys=False, indent=4)
 
 
 def get_ticker_Infobae():
     """"""
+    res = OrderedDict()
+    blue_key = u'dólar blue'
+    oficial_key = u'dólar oficial'
 
-    key = u'dólar blue'
     req = request_ticker(
         'http://www.infobae.com/adjuntos/servicios/cotizacion.json'
     )
@@ -34,12 +40,11 @@ def get_ticker_Infobae():
 
     data = json.loads(content)
 
-    if key in data:
-        j = data.get(key)
-        if isinstance(j, dict):
-            last = j['compra']['precio']
-            res = {
-                'last': float(last.replace(',', '.'))
-            }
+    if (blue_key and oficial_key) in data:
+        b = data.get(blue_key)
+        o = data.get(oficial_key)
+        if isinstance(b, dict):
+            res['blue'] = float(b['compra']['precio'].replace(',', '.'))
+            res['oficial'] = float(o['compra']['precio'].replace(',', '.'))
 
-        print res
+    return json.dumps(res, sort_keys=False, indent=4)
