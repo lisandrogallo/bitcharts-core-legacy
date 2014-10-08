@@ -48,3 +48,24 @@ def get_ticker_Infobae():
             res['oficial'] = float(o['compra']['precio'].replace(',', '.'))
 
     return json.dumps(res, sort_keys=False, indent=4)
+
+
+def get_ticker_BitcoinBrothers():
+    """"""
+    res = OrderedDict()
+    key = u'btc'
+
+    req = request_ticker(
+        'https://bitcoinbrothers.co/sys/live', verify=False
+    )
+
+    content = req.content
+
+    data = json.loads(content)
+
+    if key in data:
+        l = data.get(key)
+        if isinstance(l, dict):
+            res['last'] = float(l['buy_usd'])
+
+    return json.dumps(res, sort_keys=False, indent=4)
