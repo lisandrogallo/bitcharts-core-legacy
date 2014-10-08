@@ -13,9 +13,9 @@ class MyParser(SafeConfigParser):
         return d
 
 
-def request_ticker(api_url):
+def request_ticker(api_url, verify=True):
 
-    resp = post(api_url) or get(api_url)
+    resp = post(api_url, verify=verify) or get(api_url, verify=verify)
 
     if 200 != resp.status_code:
         return False
@@ -25,7 +25,6 @@ def request_ticker(api_url):
 
 def get_ticker(api_url):
     try:
-        # req = post(api_url) or get(api_url)
         req = request_ticker(api_url)
         if req:
             print req
