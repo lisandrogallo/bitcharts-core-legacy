@@ -1,23 +1,19 @@
 Bitcharts Core
 ==============
 
-Core and scripts used on http://bitcharts.org
-
-**Donations:** 1CPb9QZBkz3gD1rvG9ekNFK5k6jpUycika
+Core and scripts used on http://bitcharts.io
 
 ## Installation
 
 ### Dependencies
 
-    sudo pip install SQLAlchemy BeautifulSoup simplejson tweepy
+    sudo pip install -r requirements.txt
 
 If you don't have Pip, find it here: http://pypi.python.org/pypi/pip
 
 ## Credits
 
 **Author:** Lisandro Gallo (@lisogallo) liso [at] riseup.net
-
-**Collaborators:** Maxi Cañellas (@maxi_dev) maxi.canellas [at] gmail.com
 
 ## License
 
@@ -26,3 +22,8 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+-----
+<p align="center">
+<img alt="Bitcoin" title="Donate with Bitcoin" src="http://mw.gg/i/bitcoin.png" /> 1CPb9QZBkz3gD1rvG9ekNFK5k6jpUycika
+</p>
