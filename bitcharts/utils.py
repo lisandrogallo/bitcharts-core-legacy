@@ -50,3 +50,14 @@ def search_key(data, key):
     elif isinstance(data, list):
         return search_key(data[0], key)
     return False
+
+
+def write_file(content, path):
+    """
+    Write content to filesystem.
+    :param content: Anything printable.
+    :param path: Fullpath to write file in filesystem.
+    """
+    with open(path, 'w') as f:
+        print >> f, content
+    f.close()
