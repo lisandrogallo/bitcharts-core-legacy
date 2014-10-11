@@ -7,16 +7,14 @@ import json
 
 def get_ticker_LaNacion():
     """"""
-    res = OrderedDict()
+    ticker_url = 'http://contenidos.lanacion.com.ar/json/dolar'
     blue_key = 'InformalCompraValue'
     oficial_key = 'CasaCambioCompraValue'
 
-    req = request_ticker(
-        'http://contenidos.lanacion.com.ar/json/dolar'
-    )
+    res = OrderedDict()
 
+    req = request_ticker(ticker_url)
     content = req.content[19:-2]
-
     data = json.loads(content)
 
     if (blue_key and oficial_key) in data:
@@ -28,16 +26,14 @@ def get_ticker_LaNacion():
 
 def get_ticker_Infobae():
     """"""
-    res = OrderedDict()
+    ticker_url = 'http://www.infobae.com/adjuntos/servicios/cotizacion.json'
     blue_key = u'dólar blue'
     oficial_key = u'dólar oficial'
 
-    req = request_ticker(
-        'http://www.infobae.com/adjuntos/servicios/cotizacion.json'
-    )
+    res = OrderedDict()
 
+    req = request_ticker(ticker_url)
     content = req.content[1:-1]
-
     data = json.loads(content)
 
     if (blue_key and oficial_key) in data:
@@ -52,15 +48,13 @@ def get_ticker_Infobae():
 
 def get_ticker_BitcoinBrothers():
     """"""
-    res = OrderedDict()
+    ticker_url = 'https://bitcoinbrothers.co/sys/live'
     key = u'btc'
 
-    req = request_ticker(
-        'https://bitcoinbrothers.co/sys/live', verify=False
-    )
+    res = OrderedDict()
 
+    req = request_ticker(ticker_url, verify=False)
     content = req.content
-
     data = json.loads(content)
 
     if key in data:
