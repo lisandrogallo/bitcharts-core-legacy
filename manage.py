@@ -2,8 +2,9 @@
 
 from flask.ext.script import Manager
 from bitcharts.database import manager as database_manager
-from bitcharts.utils import get_ticker, search_key
+from bitcharts.utils import get_ticker, search_key, write_file
 from bitcharts import app, db, Exchange, Currency, Association
+from extras import api_parser
 
 
 # @app.errorhandler(DatabaseError)
@@ -53,6 +54,16 @@ def get_values():
                 # db.session.add(assoc)
     # db.session.commit()
 
+
+@manager.command
+def parse_tickers():
+    """"""
+    lanacion_json = api_parser.get_ticker_LaNacion()
+    write_file(lanacion_json, '/home/liso/lanacion.json')
+    infobae_json = api_parser.get_ticker_Infobae()
+    write_file(infobae_json, '/home/liso/infobae.json')
+    bitcoinbrothers_json = api_parser.get_ticker_BitcoinBrothers()
+    write_file(bitcoinbrothers_json, '/home/liso/bitcoinbrothers.json')
 
 if __name__ == "__main__":
     manager.run()
