@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.script import Manager, prompt_bool
-from bitcharts.utils import MyParser
-from bitcharts import app, db, Exchange, Currency
 from ast import literal_eval
 
+from bitcharts import app, Currency, db, Exchange
+from bitcharts.utils import MyParser
+from flask.ext.script import Manager, prompt_bool
 
 manager = Manager(usage='Perform database operations')
 exchanges = app.config.get('EXCHANGES_FILE', False)

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from ConfigParser import SafeConfigParser
-from requests import post, get
+
+from requests import get, post
 
 
 class MyParser(SafeConfigParser):

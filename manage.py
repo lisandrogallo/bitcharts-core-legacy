@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.script import Manager
+from bitcharts import app, Association, Currency, db, Exchange
 from bitcharts.database import manager as database_manager
 from bitcharts.utils import get_ticker, search_key, write_file
-from bitcharts import app, db, Exchange, Currency, Association
 from extras import api_parser
-
+from flask.ext.script import Manager
 
 # @app.errorhandler(DatabaseError)
 # def special_exception_handler(error):

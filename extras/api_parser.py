@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from bitcharts.utils import request_ticker
-from collections import OrderedDict
 import json
+from collections import OrderedDict
+
+from bitcharts.utils import request_ticker
 
 
 def get_ticker_LaNacion():
